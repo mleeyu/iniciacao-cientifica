@@ -1,0 +1,10 @@
+PKG_LIBS+=-O2
+PKG_LIBS+=`$(R_HOME)/bin/Rscript -e "RcppGSL:::LdFlags()"`
+PKG_CXXFLAGS+=$(SHLIB_OPENMP_CXXFLAGS)
+PKG_LIBS+=$(SHLIB_OPENMP_CXXFLAGS)
+
+PKG_CXXFLAGS+=-Wno-ignored-attributes
+
+# For locally installed libraries
+PKG_CXXFLAGS+=-I$(HOME)/local/gsl-2.8/include
+PKG_LIBS+=-L$(HOME)/local/gsl-2.8/lib -lgsl -lgslcblas -lm
