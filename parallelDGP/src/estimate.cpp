@@ -8,13 +8,13 @@
 #include "forecast.hpp"
 
 double log_likelihood_norm(
-    const Eigen::Ref<const Eigen::VectorXd>& parameters,
+    const Eigen::Ref<const Eigen::VectorXd>& params,
     const Eigen::Ref<const Eigen::VectorXd>& returns
 )
 {
     int n = returns.size();
 
-    Eigen::VectorXd sigma = forecast_past(parameters, returns);
+    Eigen::VectorXd sigma = forecast_past(params, returns);
 
     double sigma2;
     double sum_log_likelihood = 0;
@@ -31,7 +31,7 @@ double objective_norm(unsigned n, const double *x, double *grad, void *data)
 {
     Eigen::VectorXd& returns = *(Eigen::VectorXd*) data;
 
-    Eigen::Map<const Eigen::VectorXd> parameters(x, n);
+    Eigen::Map<const Eigen::VectorXd> params(x, n);
 
     double epsilon = std::pow(std::numeric_limits<double>::epsilon(), 1.0 / 3.0);
 
@@ -42,8 +42,8 @@ double objective_norm(unsigned n, const double *x, double *grad, void *data)
         double f_backward;
 
         for (unsigned i = 0; i < n; ++i) {
-            x_forward = parameters;
-            x_backward = parameters;
+            x_forward = params;
+            x_backward = params;
 
             x_forward[i] += epsilon;
             x_backward[i] -= epsilon;
@@ -55,7 +55,7 @@ double objective_norm(unsigned n, const double *x, double *grad, void *data)
         }
     }
 
-    return - log_likelihood_norm(parameters, returns);
+    return - log_likelihood_norm(params, returns);
 }
 
 double constraint_norm(unsigned n, const double *x, double *grad, void *data)
@@ -107,14 +107,14 @@ extern "C" SEXP R2Cpp_estimate_norm(SEXP R2Cpp_returns) {
 }
 
 double log_likelihood_std(
-    const Eigen::Ref<const Eigen::VectorXd>& parameters,
+    const Eigen::Ref<const Eigen::VectorXd>& params,
     const Eigen::Ref<const Eigen::VectorXd>& returns
 )
 {
     int n = returns.size();
-    double nu = parameters(3);
+    double nu = params(3);
 
-    Eigen::VectorXd sigma = forecast_past(parameters, returns);
+    Eigen::VectorXd sigma = forecast_past(params, returns);
 
     double sum_log_likelihood = 0;
     double sigma2;
@@ -132,7 +132,7 @@ double objective_std(unsigned n, const double *x, double *grad, void *data)
 {
     Eigen::VectorXd& returns = *(Eigen::VectorXd*) data;
 
-    Eigen::Map<const Eigen::VectorXd> parameters(x, n);
+    Eigen::Map<const Eigen::VectorXd> params(x, n);
 
     double epsilon = std::pow(std::numeric_limits<double>::epsilon(), 1.0 / 3.0);
 
@@ -143,8 +143,8 @@ double objective_std(unsigned n, const double *x, double *grad, void *data)
         double f_backward;
 
         for (unsigned i = 0; i < n; ++i) {
-            x_forward = parameters;
-            x_backward = parameters;
+            x_forward = params;
+            x_backward = params;
 
             x_forward[i] += epsilon;
             x_backward[i] -= epsilon;
@@ -156,7 +156,7 @@ double objective_std(unsigned n, const double *x, double *grad, void *data)
         }
     }
 
-    return - log_likelihood_std(parameters, returns);
+    return - log_likelihood_std(params, returns);
 }
 
 double constraint_std(unsigned n, const double *x, double *grad, void *data) {

@@ -83,7 +83,7 @@ vqr <- function(returns, value_at_risk, risk_level) {
     return(p_value)
 }
 
-backtests <- function(returns, sigma, value_at_risk, expected_shortfall, risk_level) {
+calibration_tests <- function(returns, sigma, value_at_risk, expected_shortfall, risk_level) {
     UC_CC <- GAS::BacktestVaR(data = returns, VaR = value_at_risk, alpha = risk_level)
     DQ <- dq(returns = returns, value_at_risk = value_at_risk, risk_level = risk_level, L = 4, M = 1)
     VQR <- vqr(returns = returns, value_at_risk = value_at_risk, risk_level = risk_level)
@@ -94,21 +94,22 @@ backtests <- function(returns, sigma, value_at_risk, expected_shortfall, risk_le
     sESR <- esback::esr_backtest(r = returns, q = value_at_risk, e = expected_shortfall, alpha = risk_level, version = 1)
     osiESR_tsiESR <- esback::esr_backtest(r = returns, q = value_at_risk, e = expected_shortfall, alpha = risk_level, version = 3)
 
-    return(c(
-        ifelse(unname(UC_CC$LRuc[2]) < risk_level, 1, 0),
-        ifelse(unname(UC_CC$LRcc[2]) < risk_level, 1, 0),
-        ifelse(DQ$p_value < risk_level, 1, 0),
-        ifelse(VQR < risk_level, 1, 0),
-        ifelse(ER$pvalue_onesided_standardized < risk_level, 1, 0),
-        ifelse(gCoC_sCoC$pvalue_twosided_general < risk_level, 1, 0),
-        ifelse(gCoC_sCoC$pvalue_twosided_simple < risk_level, 1, 0),
-        ifelse(aESR$pvalue_twosided_asymptotic < risk_level, 1, 0),
-        ifelse(sESR$pvalue_twosided_asymptotic < risk_level, 1, 0),
-        ifelse(osiESR_tsiESR$pvalue_onesided_asymptotic < risk_level, 1, 0),
-        ifelse(osiESR_tsiESR$pvalue_twosided_asymptotic < risk_level, 1, 0)
-    ))
+    p_values <- c(
+        unname(UC_CC$LRuc[2]),
+        unname(UC_CC$LRcc[2]),
+        DQ$p_value,
+        VQR,
+        ER$pvalue_onesided_standardized,
+        gCoC_sCoC$pvalue_twosided_general,
+        gCoC_sCoC$pvalue_twosided_simple,
+        aESR$pvalue_twosided_asymptotic,
+        sESR$pvalue_twosided_asymptotic,
+        osiESR_tsiESR$pvalue_onesided_asymptotic,
+        osiESR_tsiESR$pvalue_twosided_asymptotic
+    )
+    return(p_values)
 }
 
-backtests_names <- function() {
+calibration_tests_names <- function() {
     return(c("UC", "CC", "DQ (L=4, M=1)", "VQR", "ER", "gCoC", "sCoC", "aESR", "sESR", "osiESR", "tsiESR"))
 }

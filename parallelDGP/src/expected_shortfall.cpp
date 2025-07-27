@@ -32,9 +32,8 @@ extern "C" SEXP R2Cpp_expected_shortfall_norm(SEXP R2Cpp_risk_level, SEXP R2Cpp_
 }
 
 double xdstd(double x, void* params) {
-    double* parameters = (double*) params;
-    double sigma = parameters[0];
-    double nu = parameters[1];
+    double sigma = ((double*) params)[0];
+    double nu = ((double*) params)[1];
     double s = std::sqrt((nu - 2) / nu);
     return x * gsl_ran_tdist_pdf(x / (s * sigma), nu) / (s * sigma);
 }

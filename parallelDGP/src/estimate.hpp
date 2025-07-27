@@ -4,7 +4,7 @@
 #include <RcppEigen.h>
 
 double log_likelihood_norm(
-    const Eigen::Ref<const Eigen::VectorXd>& parameters,
+    const Eigen::Ref<const Eigen::VectorXd>& params,
     const Eigen::Ref<const Eigen::VectorXd>& returns
 );
 double objective_norm(unsigned n, const double *x, double *grad, void *data);
@@ -14,7 +14,7 @@ Eigen::VectorXd estimate_norm(
 );
 
 double log_likelihood_std(
-    const Eigen::Ref<const Eigen::VectorXd>& parameters,
+    const Eigen::Ref<const Eigen::VectorXd>& params,
     const Eigen::Ref<const Eigen::VectorXd>& returns
 );
 double objective_std(unsigned n, const double *x, double *grad, void *data);
