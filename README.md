@@ -2,12 +2,20 @@
 
 Este repositório contém os códigos e dados do projeto de iniciação científica "Avaliação das Ferramentas de *Backtesting* para o Valor-em-Risco e o *Expected Shortfall*".
 
-O script principal é `main.R`, que depende de três componentes:
-- O pacote `parallelDGP`;
-- O script `backtests.R`;
-- O script `scores.R`.
+Os scripts `monte_carlo_simulations.R` e `empirical_applications.R` contêm, respectivamente, as simulações de Monte Carlo e as aplicações empíricas.
 
-E os dados estão em `./data/output.RData`.
+O script `monte_carlo_simulations.R` depende do:
+- Pacote `parallelDGP`;
+- Script `./utils/calibration_tests.R`;
+- Script `./utils/scoring_functions.R`.
+
+O script `empirical_applications.R` depende do:
+- Pacote `parallelDGP`;
+- Script `./utils/calibration_tests.R`;
+- Script `./utils/scoring_functions.R`;
+- Script `./utils/outlier_detector.R`.
+
+Os resultados estão disponíveis em `./data/*.RData` e as tabelas geradas com o script `./utils/table_maker.R`.
 
 ## Requisitos
 ### Dependências do `parallelDGP`
@@ -17,7 +25,7 @@ E os dados estão em `./data/output.RData`.
     - `RcppEigen`;
     - `RcppGSL`;
     - `nloptr`.
-### Dependências do `backtests.R`
+### Dependências do `./utils/calibration_tests.R`
   - Pacotes R:
     - `MASS`;
     - `quantreg`;
